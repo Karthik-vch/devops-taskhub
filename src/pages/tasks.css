@@ -1,0 +1,69 @@
+.tasks-page {
+  min-height: calc(100vh - 72px);
+  padding: 60px 20px;
+}
+
+.tasks-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.tasks-header {
+  margin-bottom: 35px;
+}
+
+.tasks-header h1 {
+  font-size: 48px;
+  letter-spacing: -2px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 35px;
+}
+
+.task-form-section,
+.task-list-section {
+  padding: 28px;
+  margin-bottom: 30px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.task-form-section h2 {
+  margin-bottom: 20px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.section-heading span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.task-list {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 700px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tasks-header h1 {
+    font-size: 38px;
+  }
+
+  .task-content {
+    flex-direction: column;
+  }
+}

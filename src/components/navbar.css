@@ -1,17 +1,35 @@
 .navbar {
+  height: 72px;
+  padding: 0 40px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
+  justify-content: space-between;
   background: #111827;
   color: white;
 }
 
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 700;
+}
+
 .nav-links {
   display: flex;
-  gap: 24px;
+  gap: 28px;
+}
+
+.nav-links a {
+  color: #d1d5db;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .nav-links a:hover {
-  text-decoration: underline;
+  color: white;
+}
+
+.nav-links a.active {
+  color: white;
 }
