@@ -1,6 +1,6 @@
 import './TaskCard.css'
 
-function TaskCard({ task, onToggle }) {
+function TaskCard({ task, onToggle, onDelete }) {
   return (
     <article className={`task-card ${task.completed ? 'completed' : ''}`}>
       <div className="task-content">
@@ -14,12 +14,21 @@ function TaskCard({ task, onToggle }) {
         </span>
       </div>
 
-      <button
-        className="complete-button"
-        onClick={() => onToggle(task.id)}
-      >
-        {task.completed ? 'Completed' : 'Mark Complete'}
-      </button>
+      <div className="task-actions">
+        <button
+          className="complete-button"
+          onClick={() => onToggle(task.id)}
+        >
+          {task.completed ? 'Completed' : 'Mark Complete'}
+        </button>
+
+        <button
+          className="delete-button"
+          onClick={() => onDelete(task.id)}
+        >
+          Delete
+        </button>
+      </div>
     </article>
   )
 }

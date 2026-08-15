@@ -1,57 +1,96 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TaskCard from '../components/TaskCard'
 import TaskForm from '../components/TaskForm'
 import StatsCard from '../components/StatsCard'
+import {
+  createTask,
+  deleteTask,
+  getTasks,
+  updateTask,
+} from '../services/api'
 import './Tasks.css'
 
 function Tasks() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: 'Learn Git',
-      description: 'Understand Git commands and branching.',
-      priority: 'High',
-      completed: true,
-    },
-    {
-      id: 2,
-      title: 'Build React frontend',
-      description: 'Create the TaskHub frontend using React.',
-      priority: 'High',
-      completed: false,
-    },
-    {
-      id: 3,
-      title: 'Learn Docker',
-      description: 'Containerize the frontend and backend.',
-      priority: 'Medium',
-      completed: false,
-    },
-  ])
+  const [tasks, setTasks] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  const addTask = (task) => {
-    setTasks((currentTasks) => [
-      ...currentTasks,
-      {
-        ...task,
-        id: Date.now(),
-        completed: false,
-      },
-    ])
+  useEffect(() => {
+    const loadTasks = async () => {
+      try {
+        setError('')
+
+        const data = await getTasks()
+
+        setTasks(data)
+      } catch (error) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTasks()
+  }, [])
+
+  const addTask = async (task) => {
+    try {
+      setError('')
+
+      const newTask = await createTask(task)
+
+      setTasks((currentTasks) => [
+        newTask,
+        ...currentTasks,
+      ])
+    } catch (error) {
+      setError(error.message)
+    }
   }
 
-  const toggleTask = (id) => {
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.id === id
-          ? { ...task, completed: !task.completed }
-          : task
+  const toggleTask = async (id) => {
+    const currentTask = tasks.find((task) => task.id === id)
+
+    if (!currentTask) {
+      return
+    }
+
+    try {
+      setError('')
+
+      const updatedTask = await updateTask(id, {
+        completed: !currentTask.completed,
+      })
+
+      setTasks((currentTasks) =>
+        currentTasks.map((task) =>
+          task.id === id ? updatedTask : task
+        )
       )
-    )
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  const removeTask = async (id) => {
+    try {
+      setError('')
+
+      await deleteTask(id)
+
+      setTasks((currentTasks) =>
+        currentTasks.filter((task) => task.id !== id)
+      )
+    } catch (error) {
+      setError(error.message)
+    }
   }
 
   const totalTasks = tasks.length
-  const completedTasks = tasks.filter((task) => task.completed).length
+  const completedTasks = tasks.filter(
+    (task) => task.completed
+  ).length
+
   const pendingTasks = totalTasks - completedTasks
 
   return (
@@ -65,31 +104,57 @@ function Tasks() {
         </header>
 
         <section className="stats-grid">
-          <StatsCard title="Total Tasks" value={totalTasks} />
-          <StatsCard title="Completed" value={completedTasks} />
-          <StatsCard title="Pending" value={pendingTasks} />
+          <StatsCard
+            title="Total Tasks"
+            value={totalTasks}
+          />
+
+          <StatsCard
+            title="Completed"
+            value={completedTasks}
+          />
+
+          <StatsCard
+            title="Pending"
+            value={pendingTasks}
+          />
         </section>
 
         <section className="task-form-section">
           <h2>Add New Task</h2>
+
           <TaskForm onAddTask={addTask} />
         </section>
 
         <section className="task-list-section">
           <div className="section-heading">
             <h2>Tasks</h2>
-            <span>{totalTasks} tasks</span>
+
+            <span>
+              {totalTasks} tasks
+            </span>
           </div>
 
-          <div className="task-list">
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onToggle={toggleTask}
-              />
-            ))}
-          </div>
+          {loading && (
+            <p>Loading tasks...</p>
+          )}
+
+          {error && (
+            <p>{error}</p>
+          )}
+
+          {!loading && !error && (
+            <div className="task-list">
+              {tasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onToggle={toggleTask}
+                  onDelete={removeTask}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </main>

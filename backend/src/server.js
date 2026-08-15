@@ -1,11 +1,13 @@
 import express from 'express'
 import db from './database/database.js'
 import taskRoutes from './routes/taskRoutes.js'
+import cors from 'cors'
 
 const app = express()
 
 const PORT = 5000
 
+app.use(cors())
 app.use(express.json())
 app.use('/api/tasks', taskRoutes);
 app.get('/', (req, res) => {
