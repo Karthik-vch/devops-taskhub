@@ -1,0 +1,21 @@
+﻿services:
+  backend:
+    image: taskhub-backend:latest
+    container_name: taskhub-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - taskhub-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    image: taskhub-frontend:latest
+    container_name: taskhub-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  taskhub-data:
